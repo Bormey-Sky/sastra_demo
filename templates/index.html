@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Audio DB Interface</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h1>ContentID</h1>
+
+        <form id="registerForm">
+            <h2>Register Audio</h2>
+            <input type="file" name="song" id="registerSong" accept="audio/*" required />
+            <br />
+            <label for="songTitle">Song Title (optional):</label>
+            <input type="text" name="song_title" id="songTitle" />
+            <br />
+            <button type="submit" class="btn">Register</button>
+        </form>
+
+        <hr />
+
+        <form id="searchForm">
+            <h2>Search Audio</h2>
+            <input type="file" name="song" id="searchSong" accept="audio/*" required />
+            <br />
+            <button type="submit" class="btn">Search</button>
+        </form>
+
+
+        <hr />
+
+        <div id="results" style="display:none;">
+            <h2>Results</h2>
+            <pre id="resultsOutput"></pre>
+        </div>
+    </div>
+
+    <div id="loadingIndicator" style="display: none">
+        <p>Searching...</p>
+      </div>
+      
+
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const searchForm = document.getElementById('searchForm');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const resultsDiv = document.getElementById('results');
+        const resultsOutput = document.getElementById('resultsOutput');
+
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            loadingIndicator.style.display = 'block';
+            const formData = new FormData(registerForm);
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    alert('Error registering file');
+                    return;
+                }
+                loadingIndicator.style.display = 'none';
+                const data = await response.json();
+                alert('Registration successful!');
+                console.log(data);
+            } catch (err) {
+                console.error(err);
+                loadingIndicator.style.display = 'none';
+                alert('Registration failed!');
+            }
+        });
+
+        searchForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            loadingIndicator.style.display = 'block';
+            const formData = new FormData(searchForm);
+            try {
+                const response = await fetch('/api/search', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    alert('Error searching file');
+                    return;
+                }
+                loadingIndicator.style.display = 'none';
+                const data = await response.json();
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = '';
+
+
+                // let entries = Object.entries(data);
+                // entries.sort((a, b) => parseFloat(b[1].matching_score) - parseFloat(a[1].matching_score));
+
+
+
+                for (const [songId, matchData] of Object.entries(data)) {
+                    const songContainer = document.createElement('div');
+                    songContainer.style.border = '1px solid #ccc';
+                    songContainer.style.padding = '1rem';
+                    songContainer.style.marginBottom = '1rem';
+
+                    matchData.match_segments.forEach((segment) => {
+                        const figure = document.createElement('figure');
+                        figure.style.borderBottom = '1px dashed #aaa';
+                        figure.style.marginBottom = '1rem';
+
+                        const figcaption = document.createElement('figcaption');
+                        figcaption.textContent = `Match Song: ${matchData.song_title} | Segment: ${segment.query_audio_segment}
+ (Start: ${segment.starting_position}s, End: ${segment.ending_position}s) 
+ Score: ${segment.matching_score}`;
+                        figure.appendChild(figcaption);
+
+                        const targetAudio = document.createElement('audio');
+                        targetAudio.controls = true;
+                        targetAudio.src = segment.target_audio_url;
+                        figure.appendChild(targetAudio);
+
+                        // const targetDownload = document.createElement('a');
+                        // targetDownload.href = segment.target_audio_url;
+                        // targetDownload.download = '';
+                        // targetDownload.textContent = ' Download target snippet';
+                        // targetDownload.style.marginRight = '1rem';
+                        // figure.appendChild(targetDownload);
+
+                        figure.appendChild(document.createElement('br'));
+                        figure.appendChild(document.createElement('br'));
+
+                        const queryAudio = document.createElement('audio');
+                        queryAudio.controls = true;
+                        queryAudio.src = segment.query_audio_url;
+                        figure.appendChild(queryAudio);
+
+                        // const queryDownload = document.createElement('a');
+                        // queryDownload.href = segment.query_audio_url;
+                        // queryDownload.download = '';
+                        // queryDownload.textContent = ' Download query snippet';
+                        // queryDownload.style.marginRight = '1rem';
+                        // figure.appendChild(queryDownload);
+
+
+                        songContainer.appendChild(figure);
+                    });
+                    resultsDiv.appendChild(songContainer);
+                }
+                
+            } catch (err) {
+                console.error(err);
+                loadingIndicator.style.display = 'none';
+                alert('Search failed!');
+            }
+        });
+    </script>
+</body>
+
+</html>

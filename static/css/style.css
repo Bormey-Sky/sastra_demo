@@ -1,0 +1,63 @@
+/* style.css */
+
+/* Use a container to center all content */
+.container {
+    width: 90%; /* Or any max width you like */
+    max-width: 600px;
+    margin: 0 auto; /* This centers the container horizontally */
+    text-align: center; /* Center text inside the container */
+    font-family: Arial, sans-serif; /* A nicer default font */
+  }
+  
+  /* Basic heading styles */
+  h1, h2 {
+    margin-bottom: 1rem;
+  }
+  
+  /* Form spacing */
+  form {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Button styling */
+  .btn,
+  button[type="submit"] {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 0.5rem;
+  }
+  
+  /* Button hover effect */
+  .btn:hover,
+  button[type="submit"]:hover {
+    background-color: #2980b9;
+  }
+  
+  /* We can also style inputs a bit */
+  input[type="file"],
+  input[type="text"] {
+    margin: 0.5rem 0;
+  }
+  
+  /* For your results area, you might want a bit of spacing */
+  #results {
+    margin-top: 2rem;
+  }
+  
+  /* figure / audio spacing */
+  figure {
+    margin: 1rem 0;
+  }
+  figcaption {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  
+  
