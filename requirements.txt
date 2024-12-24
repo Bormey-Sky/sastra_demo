@@ -37,7 +37,7 @@ marshmallow==3.23.1
 matplotlib==3.9.4
 mdurl==0.1.2
 milvus-lite==2.4.10
-milvus_cli==1.0.0
+# milvus_cli==1.0.0
 mpmath==1.3.0
 msgpack==1.1.0
 networkx==3.4.2
