@@ -86,7 +86,7 @@ async def register(song: UploadFile, song_title: str = Body()):
         [
             {
                 "embedding": embedding[0],
-                "song_title": song.filename.replace(".mp3", ""),
+                "song_title": song.filename,
                 "start_position_sec": 0,
                 "end_position_sec": int(math.ceil(audio.shape[0] / 32000)),
                 "song_id": 0,
