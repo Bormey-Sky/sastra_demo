@@ -1,7 +1,7 @@
 from database_client import DatabaseClient
 
 client = DatabaseClient(
-    host="127.0.0.1",
+    host="134.209.97.57",
     port="19530",
     
 )

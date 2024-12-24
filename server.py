@@ -9,10 +9,10 @@ from typing import Union
 from pymilvus import Collection
 from init_db import DatabaseClient
 from contextlib import asynccontextmanager
+from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, UploadFile, Body
 from panns_inference.inference import AudioTagging
 from fastapi.responses import HTMLResponse, FileResponse
-from fastapi.staticfiles import StaticFiles
 
 
 ml_model = {}
@@ -36,7 +36,7 @@ async def lifespan(app: FastAPI):
     ml_model["audio_embeddor"] = AudioTagging(
         checkpoint_path=None, device='cuda')
     db_client = DatabaseClient(
-        host="127.0.0.1",
+        host="134.209.97.57",
         port="19530",
     )
     db_client.connect()
@@ -72,6 +72,7 @@ def play_audio(filename: str):
 
 @app.post("/api/register")
 async def register(song: UploadFile, song_title: str = Body()):
+    print("song title >> ", song.filename)
     emb_model = ml_model["audio_embeddor"]
     db_client: DatabaseClient = global_values["db_client"]
     content = await song.read()
@@ -85,7 +86,7 @@ async def register(song: UploadFile, song_title: str = Body()):
         [
             {
                 "embedding": embedding[0],
-                "song_title": song_title,
+                "song_title": song.filename.replace(".mp3", ""),
                 "start_position_sec": 0,
                 "end_position_sec": int(math.ceil(audio.shape[0] / 32000)),
                 "song_id": 0,
