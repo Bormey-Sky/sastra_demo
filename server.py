@@ -134,6 +134,7 @@ async def search(song: UploadFile):
 
     (audio, _) = librosa.core.load("out.mp3", sr=32000, mono=True)
     _, embedding = emb_model.inference(audio[None, :])
+    print("embedding", embedding)
     collection = Collection("songs")
     result = collection.search(
         data=[embedding[0]],
@@ -149,14 +150,14 @@ async def search(song: UploadFile):
 
     )
     result = result[0]
-    print(result)
+    print("this is the result: ", result)
     if len(result) == 0:
         return []
 
     if result[0].distance >= 0.9999999:
 
         db_filename = result[0].get("audio_url")
-        original_path = f"songs/{db_filename}"
+        original_path = "out.mp3"
 
         out_path = f"out/{db_filename}"
         shutil.copyfile(original_path, out_path)
@@ -170,7 +171,8 @@ async def search(song: UploadFile):
                 "matching_score": result[0].distance,
                 "starting_position": result[0].get("start_position_sec"),
                 "ending_position": result[0].get("end_position_sec"),
-                "target_audio_url": web_url
+                "target_audio_url": web_url,
+                "query_audio_url": web_url
             }]
         }]
 
@@ -197,7 +199,7 @@ async def search(song: UploadFile):
         if len(result) == 0:
             continue
 
-        result = sorted(result, key=lambda x: x.distance, reverse=True)
+        # result = sorted(result, key=lambda x: x.distance, reverse=True)
 
         song_id = result[0].get("song_id")
         song_title = result[0].get("song_title")

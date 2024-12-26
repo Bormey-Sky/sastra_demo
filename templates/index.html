@@ -16,7 +16,7 @@
             <input type="file" name="song" id="registerSong" accept="audio/*" required />
             <br />
             <label for="songTitle">Song Title:</label>
-            <input type="text" name="song_title" id="songTitle" required/>
+            <input type="text" name="song_title" id="songTitle" required />
             <br />
             <button type="submit" class="btn">Register</button>
         </form>
@@ -41,8 +41,8 @@
 
     <div id="loadingIndicator" style="display: none">
         <p>Loading...</p>
-      </div>
-      
+    </div>
+
 
     <script>
         const registerForm = document.getElementById('registerForm');
@@ -94,10 +94,6 @@
                 resultsDiv.innerHTML = '';
 
 
-                // let entries = Object.entries(data);
-                // entries.sort((a, b) => parseFloat(b[1].matching_score) - parseFloat(a[1].matching_score));
-
-
 
                 for (const [songId, matchData] of Object.entries(data)) {
                     const songContainer = document.createElement('div');
@@ -119,6 +115,8 @@
                         const targetAudio = document.createElement('audio');
                         targetAudio.controls = true;
                         targetAudio.src = segment.target_audio_url;
+                        console.log("target audio url: ", segment.target_audio_url);
+
                         figure.appendChild(targetAudio);
 
                         // const targetDownload = document.createElement('a');
@@ -134,6 +132,9 @@
                         const queryAudio = document.createElement('audio');
                         queryAudio.controls = true;
                         queryAudio.src = segment.query_audio_url;
+
+                        console.log("audio url: ", segment.query_audio_url);
+
                         figure.appendChild(queryAudio);
 
                         // const queryDownload = document.createElement('a');
@@ -148,7 +149,7 @@
                     });
                     resultsDiv.appendChild(songContainer);
                 }
-                
+
             } catch (err) {
                 console.error(err);
                 loadingIndicator.style.display = 'none';
